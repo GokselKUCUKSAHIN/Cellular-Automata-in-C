@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define BLC 219
-//254 219
+//254 219 // block char value
 
 #define MAX_X 78
 #define MAX_Y 28
@@ -18,19 +18,20 @@ void printAutomata(void);
 void nextGeneration(void);
 
 
-int state[78][28];
-int next[78][28]; //next
+int state[MAX_X][MAX_Y];
+int next[MAX_X][MAX_Y]; //next
 int switcher = 0;
 
 int main(void)
 {
+	system("color f0");
 	setRandomSeed();
 	drawBorder();
 	
 	int i,j;
-	for(i = 0; i < 78; i++)
+	for(i = 0; i < MAX_X; i++)
 	{
-		for(j = 0; j < 28; j++)
+		for(j = 0; j < MAX_Y; j++)
 		{
 			// Fill state with random numbers
 			if(getRandom() < 2)
@@ -45,7 +46,7 @@ int main(void)
 		}
 	}
 	//
-	for(i = 0; i< 1030522874 ; i++)
+	for(i = 0; i < 1030522874; i++)
 	{
 		printAutomata();
 		nextGeneration();
@@ -64,7 +65,7 @@ void nextGeneration()
 		{
 			for(j = 0; j < MAX_Y - 1; j++)
 			{
-				int neighbors = countNeighbours(i,j);
+				int neighbors = countNeighbours(i, j);
 				if(next[i][j] == 0 && neighbors == 3)
 				{
 					//live on next gen
@@ -90,7 +91,7 @@ void nextGeneration()
 		{
 			for(j = 0; j < MAX_Y - 1; j++)
 			{
-				int neighbors = countNeighbours(i,j);
+				int neighbors = countNeighbours(i, j);
 				if(state[i][j] == 0 && neighbors == 3)
 				{
 					//live on next gen
@@ -271,42 +272,42 @@ int countNeighbours(int x, int y)
 void printAutomata(void)
 {
 	int i,j;
-	for(i = 1; i < 79; i++)
+	for(i = 1; i < MAX_X + 1; i++)
 	{
-		for(j = 1;j < 29; j++)
+		for(j = 1;j < MAX_Y + 1; j++)
 		{
-			gotoxy(i,j);
+			gotoxy(i, j);
 			if(switcher == 1)
 			{
-				if(next[i-1][j-1] == 1)
+				if(next[i - 1][j - 1] == 1)
 				{
-					if(state[i-1][j-1] == 0)
+					if(state[i - 1][j - 1] == 0)
 					{
-						printf("%c",BLC);
+						printf("%c", BLC);
 					}
 				}
 				else
 				{
-					if(state[i-1][j-1] == 1)
+					if(state[i - 1][j - 1] == 1)
 					{
-						printf("%c",' ');
+						printf("%c", ' ');
 					}
 				}
 			}
 			else
 			{
-				if(state[i-1][j-1])
+				if(state[i - 1][j - 1])
 				{
-					if(next[i-1][j-1] == 0)
+					if(next[i - 1][j - 1] == 0)
 					{
-						printf("%c",BLC);
+						printf("%c", BLC);
 					}
 				}
 				else
 				{
-					if(next[i-1][j-1])
+					if(next[i - 1][j - 1])
 					{
-						printf("%c",' ');
+						printf("%c", ' ');
 					}
 				}
 			}
@@ -324,28 +325,28 @@ void gotoxy(int x, int y)
 
 void drawBorder(void)
 {
-	int i,j;
-    printf("%c",201); // Upper Left Corner
-    for(i = 0; i < 78; i++)
+	int i, j;
+    printf("%c", 201); // Upper Left Corner
+    for(i = 0; i < MAX_X; i++)
     {
-    	printf("%c",205); // Upper Band
+    	printf("%c", 205); // Upper Band
     }
-    printf("%c\n",187); // Upper Right Corner
-    for(i = 1; i < 29; i++)
+    printf("%c\n", 187); // Upper Right Corner
+    for(i = 1; i < MAX_Y + 1; i++)
     {
     	//Side Bands
-    	gotoxy(0,i);
-		printf("%c",186); // Left
-		gotoxy(79,i);
-		printf("%c",186); // Right 
+    	gotoxy(0, i);
+		printf("%c", 186); // Left
+		gotoxy(MAX_X + 1, i);
+		printf("%c", 186); // Right 
     }
-    gotoxy(0,29); 
-    printf("%c",200); // Bottom Left Corner
-    for(i = 0; i < 78; i++)
+    gotoxy(0,MAX_Y + 1); 
+    printf("%c", 200); // Bottom Left Corner
+    for(i = 0; i < MAX_X; i++)
     {
-    	printf("%c",205); // Bottom Band
+    	printf("%c", 205); // Bottom Band
     }
-    printf("%c\n",188); // Bottom Right Corner
+    printf("%c\n", 188); // Bottom Right Corner
 }
 
 void setRandomSeed()
@@ -357,6 +358,5 @@ void setRandomSeed()
 int getRandom(void)
 {
 	// get random int between [0-7] 
-	return rand()%8;
+	return rand() % 8;
 }
-/*JELLBEANCI (c)*/
