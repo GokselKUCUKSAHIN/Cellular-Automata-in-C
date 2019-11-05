@@ -45,7 +45,7 @@ int main(void)
 		}
 	}
 	//
-	for(i = 0; i< 17004453 ; i++)
+	for(i = 0; i< 1030522874 ; i++)
 	{
 		printAutomata();
 		nextGeneration();
