@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define BLC 219
-//254
+//254 219
 
 #define MAX_X 78
 #define MAX_Y 28
@@ -15,6 +15,8 @@ int getRandom(void);
 void setRandomSeed(void);
 int countNeighbours(int x,int y);
 void printAutomata(void);
+void nextGeneration(void);
+
 
 int state[78][28];
 int next[78][28]; //next
@@ -26,41 +28,87 @@ int main(void)
 	drawBorder();
 	
 	int i,j;
-	for(i = 1; i < 79; i++)
+	for(i = 0; i < 78; i++)
 	{
-		for(j = 1; j < 29; j++)
+		for(j = 0; j < 28; j++)
 		{
 			// Fill state with random numbers
 			if(getRandom() < 2)
 			{
-				state[i-1][j-1] = 1;
+				state[i][j] = 1;
 			}
 			else
 			{
-				state[i-1][j-1] = 0;
+				state[i][j] = 0;
 			}
+			next[i][j] = 0;
 		}
 	}
 	//
-	for(i = 1; i < 79; i++)
+	for(i = 0; i< 17004453 ; i++)
 	{
-		for(j = 1; j < 29; j++)
-		{
-			// Fill state with random numbers
-			if(getRandom() < 2)
-			{
-				state[i-1][j-1] = 1;
-			}
-			else
-			{
-				state[i-1][j-1] = 0;
-			}
-		}
+		printAutomata();
+		nextGeneration();
 	}
-	
-	//printAutomata();
     getch(); // wait user input just before close
     return 0;
+}
+
+void nextGeneration()
+{
+	int i,j;
+	if(switcher)
+	{
+		//next
+		for(i = 0; i < MAX_X - 1; i++)
+		{
+			for(j = 0; j < MAX_Y - 1; j++)
+			{
+				int neighbors = countNeighbours(i,j);
+				if(next[i][j] == 0 && neighbors == 3)
+				{
+					//live on next gen
+					state[i][j] = 1;
+				}
+				else if (next[i][j] && (neighbors < 2 || neighbors > 3))
+				{
+					//die on next gen
+					state[i][j] = 0;
+				}
+				else
+				{
+					state[i][j] = next[i][j];
+				}
+			}
+		}
+		switcher = 0;
+	}
+	else
+	{
+		//state
+		for(i = 0; i < MAX_X - 1; i++)
+		{
+			for(j = 0; j < MAX_Y - 1; j++)
+			{
+				int neighbors = countNeighbours(i,j);
+				if(state[i][j] == 0 && neighbors == 3)
+				{
+					//live on next gen
+					next[i][j] = 1;
+				}
+				else if (state[i][j] && (neighbors < 2 || neighbors > 3))
+				{
+					//die on next gen
+					next[i][j] = 0;
+				}
+				else
+				{
+					next[i][j] = state[i][j];
+				}
+			}
+		}
+		switcher = 1;
+	}
 }
  
 int countNeighbours(int x, int y)
@@ -84,7 +132,7 @@ int countNeighbours(int x, int y)
         	}
 		}
     }
-        //
+	//
     if (y < MAX_Y - 1)
     {
         // up
@@ -228,25 +276,43 @@ void printAutomata(void)
 		for(j = 1;j < 29; j++)
 		{
 			gotoxy(i,j);
-			if(switcher)
+			if(switcher == 1)
 			{
-				if(next[i-1][j-1])
+				if(next[i-1][j-1] == 1)
 				{
-					printf("%c",BLC);
+					if(state[i-1][j-1] == 0)
+					{
+						printf("%c",BLC);
+					}
 				}
-				switcher = 0;
+				else
+				{
+					if(state[i-1][j-1] == 1)
+					{
+						printf("%c",' ');
+					}
+				}
 			}
 			else
 			{
 				if(state[i-1][j-1])
 				{
-					printf("%c",BLC);
+					if(next[i-1][j-1] == 0)
+					{
+						printf("%c",BLC);
+					}
 				}
-				switcher = 1;
+				else
+				{
+					if(next[i-1][j-1])
+					{
+						printf("%c",' ');
+					}
+				}
 			}
 		}
 	}
-} 
+}
 
 void gotoxy(int x, int y)
 {
